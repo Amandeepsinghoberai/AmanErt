@@ -230,8 +230,38 @@ function init() {
   updateRiskProfile();
 const surveyField = document.getElementById("surveyData");
 if (surveyField) {
-  surveyField.value = JSON.stringify(state);
+
+  const correct = state.deepfakeAnswers.filter(a => a.correct).length;
+  const total = state.deepfakeAnswers.length;
+  const accuracy = total ? Math.round((correct / total) * 100) : 0;
+
+  surveyField.value = `
+----- USER JOURNEY SUMMARY -----
+
+Deepfake Test:
+Accuracy: ${accuracy}% (${correct}/${total})
+
+Encounter Level: ${state.encounterLevel}
+Concern Level: ${state.concernLevel}/10
+Damage Level: ${state.damageLevel}/10
+
+Would Use Tool: ${state.wouldUseTool}
+Willingness To Pay: ${state.willingnessToPay}
+
+Selected Role: ${state.role}
+
+--- Business Details ---
+Verify Content: ${state.b2b.verify}
+Misinformation Damage: ${state.b2b.damage}
+Enterprise API: ${state.b2b.api}
+Company Size: ${state.b2b.size}
+Demo Requested: ${state.b2b.demo}
+
+--------------------------------
+  `.trim();
 }
+
+
 
   const formData = new FormData(form);
 
