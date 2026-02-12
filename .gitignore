@@ -1,0 +1,6 @@
+node_modules/
+analytics.xlsx
+db.json
+.env
+*.log
+# *.mp4
