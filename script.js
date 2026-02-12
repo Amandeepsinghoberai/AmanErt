@@ -27,7 +27,7 @@ const state = {
 
 const items = [
   {
-    truth: "Fake",
+    truth: "Real",
     explain: "Subtle skin smoothing and edge blending indicate face-swap artifacts.",
     stat: "67% of users misclassified this."
   },
@@ -37,7 +37,7 @@ const items = [
     stat: "71% spotted the anomaly."
   },
   {
-    truth: "Real",
+    truth: "Fake",
     explain: "Natural lighting and consistent edges without blending artifacts.",
     stat: "62% identified this correctly."
   }
