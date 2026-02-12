@@ -221,29 +221,62 @@
       </div>
     </section>
 
-    <section class="section" id="signup">
-      <div class="section-head">
-        <h2>Get Early Access</h2>
-        <p>Protect your digital identity.</p>
-      </div>
-      <form id="signupForm" class="form">
-        <div class="form-row">
-          <input id="nameInput" type="text" placeholder="Name" required>
-          <input id="emailInput" type="email" placeholder="Email" required>
-        </div>
-        <div class="form-row">
-          <select id="roleSelect" required>
-            <option value="">Select Role</option>
-            <option>Student</option>
-            <option>Professional</option>
-            <option>Business Owner</option>
-            <option>Media Professional</option>
-            <option>Government</option>
-          </select>
-        </div>
-        <button class="btn primary" type="submit">Join Waitlist</button>
-      </form>
-    </section>
+<section class="section" id="signup">
+  <div class="section-head">
+    <h2>Get Early Access</h2>
+    <p>Protect your digital identity.</p>
+  </div>
+
+  <form 
+    id="signupForm" 
+    class="form"
+    name="waitlist"
+    method="POST"
+    data-netlify="true"
+    netlify-honeypot="bot-field"
+  >
+    <!-- Required for Netlify -->
+    <input type="hidden" name="form-name" value="waitlist" />
+    <p style="display:none">
+      <label>Don’t fill this out: <input name="bot-field" /></label>
+    </p>
+
+    <div class="form-row">
+      <input 
+        id="nameInput" 
+        type="text" 
+        name="name"
+        placeholder="Name" 
+        required
+      >
+      <input 
+        id="emailInput" 
+        type="email" 
+        name="email"
+        placeholder="Email" 
+        required
+      >
+    </div>
+
+    <div class="form-row">
+      <select 
+        id="roleSelect" 
+        name="role"
+        required
+      >
+        <option value="">Select Role</option>
+        <option>Student</option>
+        <option>Professional</option>
+        <option>Business Owner</option>
+        <option>Media Professional</option>
+        <option>Government</option>
+      </select>
+    </div>
+
+    <button class="btn primary" type="submit">Join Waitlist</button>
+  </form>
+</section>
+
 
     <section class="section" id="analytics">
       <div class="section-head">
