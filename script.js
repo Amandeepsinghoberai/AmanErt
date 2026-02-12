@@ -228,6 +228,10 @@ function init() {
   updateProgress();
   updateAnalytics();
   updateRiskProfile();
+const surveyField = document.getElementById("surveyData");
+if (surveyField) {
+  surveyField.value = JSON.stringify(state);
+}
 
   const formData = new FormData(form);
 
