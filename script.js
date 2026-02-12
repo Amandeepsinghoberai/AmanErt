@@ -45,17 +45,19 @@ const items = [
 
 function updateProgress() {
   let c = 0;
+
   if (state.deepfakeAnswers.length >= items.length) c++;
   if (state.encounterLevel !== null && state.concernLevel !== null) c++;
   if (state.damageLevel !== null && state.wouldUseTool !== null && state.willingnessToPay !== null) c++;
   if (state.productScan.score !== null) c++;
-  if (state.role !== null) c++;
-  if (state.user.email) c++;
   if (state.role) c++;
+  if (state.user.email) c++;
+
   const pct = Math.min(100, Math.round((c / 6) * 100));
   const bar = document.getElementById("progressBar");
   if (bar) bar.style.width = pct + "%";
 }
+
 
 function updateAnalytics() {
   const correct = state.deepfakeAnswers.filter(a => a.correct).length;
@@ -209,28 +211,53 @@ function init() {
     updateAnalytics();
   }));
   const form = document.getElementById("signupForm");
-  if (form) form.addEventListener("submit", e => {
-    e.preventDefault();
-    const name = document.getElementById("nameInput").value.trim();
-    const email = document.getElementById("emailInput").value.trim();
-    const role = document.getElementById("roleSelect").value;
-    if (!name || !email || !role) return;
-    state.user.name = name;
-    state.user.email = email;
-    state.user.role = role;
-    updateProgress();
-    updateAnalytics();
-    updateRiskProfile();
-    form.reset();
-    const btn = form.querySelector("button[type=submit]");
-    if (btn) {
-      const prev = btn.textContent;
-      btn.textContent = "Added";
-      btn.disabled = true;
-      setTimeout(() => { btn.textContent = prev; btn.disabled = false; }, 1400);
-    }
-    document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
-  });
+  if (form) form.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const name = document.getElementById("nameInput").value.trim();
+  const email = document.getElementById("emailInput").value.trim();
+  const role = document.getElementById("roleSelect").value;
+
+  if (!name || !email || !role) return;
+
+  // Update local state (keeps your analytics working)
+  state.user.name = name;
+  state.user.email = email;
+  state.user.role = role;
+
+  updateProgress();
+  updateAnalytics();
+  updateRiskProfile();
+
+  const formData = new FormData(form);
+
+  try {
+    await fetch("/", {
+      method: "POST",
+      body: formData
+    });
+  } catch (err) {
+    console.warn("Netlify form submit failed", err);
+  }
+
+  form.reset();
+
+  const btn = form.querySelector("button[type=submit]");
+  if (btn) {
+    const prev = btn.textContent;
+    btn.textContent = "Added";
+    btn.disabled = true;
+    setTimeout(() => { 
+      btn.textContent = prev; 
+      btn.disabled = false; 
+    }, 1400);
+  }
+
+  document.getElementById("profile").scrollIntoView({ behavior: "smooth" });
+  setTimeout(sendAnalytics, 200);
+
+});
+
   const dn = document.getElementById("downloadJson");
   if (dn) dn.addEventListener("click", downloadJSON);
   updateProgress();
@@ -273,12 +300,4 @@ async function fetchMetrics() {
 }
 
 // Send analytics after email capture (most complete snapshot)
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("signupForm");
-  if (form) {
-    form.addEventListener("submit", () => {
-      setTimeout(sendAnalytics, 200);
-    });
-  }
-  fetchMetrics();
-});
+
